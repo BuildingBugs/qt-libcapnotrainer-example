@@ -215,6 +215,7 @@ Makefile: qt_example.pro C:\Qt\Qt5.6.2\5.6\msvc2015_64\mkspecs\win32-msvc2015\qm
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\mkspecs\features\lex.prf \
 		qt_example.pro \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\qtmain.prl \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5PrintSupport.prl \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5Widgets.prl \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5Gui.prl \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5SerialPort.prl \
@@ -362,6 +363,7 @@ C:\Qt\Qt5.6.2\5.6\msvc2015_64\mkspecs\features\yacc.prf:
 C:\Qt\Qt5.6.2\5.6\msvc2015_64\mkspecs\features\lex.prf:
 qt_example.pro:
 C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\qtmain.prl:
+C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5PrintSupport.prl:
 C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5Widgets.prl:
 C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5Gui.prl:
 C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5SerialPort.prl:

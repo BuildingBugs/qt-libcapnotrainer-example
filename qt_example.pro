@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui serialport
+QT += printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -12,10 +13,14 @@ TARGET = qt_example
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp
 
-HEADERS  += mainwindow.h
+SOURCES += main.cpp\
+        mainwindow.cpp \
+        qcustomplot.cpp
+
+
+HEADERS  += mainwindow.h \
+        qcustomplot.h
 
 FORMS    += mainwindow.ui
 

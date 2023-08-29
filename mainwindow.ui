@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>436</width>
-    <height>300</height>
+    <width>1030</width>
+    <height>657</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QComboBox" name="comboBox">
+   <widget class="QComboBox" name="comboBox1">
     <property name="geometry">
      <rect>
       <x>100</x>
@@ -50,7 +50,7 @@
      <string>Port 2</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox_2">
+   <widget class="QComboBox" name="comboBox2">
     <property name="geometry">
      <rect>
       <x>100</x>
@@ -60,7 +60,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="startButton">
     <property name="geometry">
      <rect>
       <x>270</x>
@@ -86,28 +86,26 @@
      <string/>
     </property>
    </widget>
+   <widget class="QCustomPlot" name="customPlot" native="true">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>100</y>
+      <width>951</width>
+      <height>501</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>436</width>
+     <width>1030</width>
      <height>20</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuSelect_Port">
-    <property name="title">
-     <string>Select Port 1</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuSelect_Port_2">
-    <property name="title">
-     <string>Select Port 2</string>
-    </property>
-   </widget>
-   <addaction name="menuSelect_Port"/>
-   <addaction name="menuSelect_Port_2"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -120,6 +118,14 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
