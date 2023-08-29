@@ -1,6 +1,8 @@
 #pragma once
 
-#define _WIN32_WINNT 0x0601
+#ifdef WIN32
+    #define _WIN32_WINNT 0x0601
+#endif
 
 
 #include <memory>

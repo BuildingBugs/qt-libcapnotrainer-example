@@ -21,7 +21,7 @@ FORMS    += mainwindow.ui
 
 
 
-win32: LIBS += -L$$PWD/third_party/capnotrainer/lib/ -llibcapnotrainer
+win32: LIBS += -L$$PWD/third_party/capnotrainer/lib/ -llibcapnotrainergo
 
 INCLUDEPATH += $$PWD/third_party/asio/asio/include
 INCLUDEPATH += $$PWD/third_party/capnotrainer/include

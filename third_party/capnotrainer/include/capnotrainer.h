@@ -16,10 +16,10 @@ typedef std::function<void(std::vector<float> data, DeviceType device_type, uint
 class CapnoTrainer
 {
 public:
-    CapnoTrainer(const char* port1, const char* port2, user_cb_t user_cb);
+    CapnoTrainer(const char* port1, const char* port2, user_cb_t user_cb, bool debug);
     ~CapnoTrainer();
     static const char* GetVersion() {
-        return "v1.0.0";
+        return "v1.0.1";
     }
 
     void Initialize();
@@ -35,6 +35,9 @@ protected:
     asio::serial_port serial_port_2;
 
 private:
+
+    bool debug = false;
+    int device_max_connection_time = 5000;
 
     user_cb_t user_cb;
     std::vector<std::thread> tg;

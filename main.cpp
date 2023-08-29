@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
     std::cout << "CapnoTrainer: " << CapnoTrainer::GetVersion() << std::endl;
 
     try {
-        CapnoTrainer capno(port1, port2, user_data_callback);
+        CapnoTrainer capno(port1, port2, user_data_callback, true);
         std::thread t1(std::thread([&capno]() { capno.Initialize(); }));
         std::thread t2(std::thread([&argc, &argv] (){ start_qt(argc, argv); }));
         t1.join();

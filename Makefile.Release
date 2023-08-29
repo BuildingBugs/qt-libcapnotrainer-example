@@ -17,7 +17,7 @@ CXXFLAGS      = -nologo -Zc:wchar_t -FS -Zc:strictStrings -Zc:throwingNew -O2 -M
 INCPATH       = -I. -Ithird_party\asio\asio\include -Ithird_party\capnotrainer\include -IC:\Qt\Qt5.6.2\5.6\msvc2015_64\include -IC:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets -IC:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtGui -IC:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtANGLE -IC:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtSerialPort -IC:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore -Irelease -I. -IC:\Qt\Qt5.6.2\5.6\msvc2015_64\mkspecs\win32-msvc2015 
 LINKER        = link
 LFLAGS        = /NOLOGO /DYNAMICBASE /NXCOMPAT /INCREMENTAL:NO /SUBSYSTEM:WINDOWS "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'"
-LIBS          = /LIBPATH:C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\qtmain.lib shell32.lib /LIBPATH:C:\utils\my_sql\my_sql\lib /LIBPATH:C:\utils\postgresql\pgsql\lib /LIBPATH:C:\Users\Arsh\Desktop\capno-project\capno-desktop\capnotrainer-library\qt_example\qt_example\third_party\capnotrainer\lib C:\Users\Arsh\Desktop\capno-project\capno-desktop\capnotrainer-library\qt_example\qt_example\third_party\capnotrainer\lib\libcapnotrainer.lib C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5Widgets.lib C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5Gui.lib C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5SerialPort.lib C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5Core.lib 
+LIBS          = /LIBPATH:C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\qtmain.lib shell32.lib /LIBPATH:C:\utils\my_sql\my_sql\lib /LIBPATH:C:\utils\postgresql\pgsql\lib /LIBPATH:C:\Users\Arsh\Desktop\capno-project\capno-desktop\capnotrainer-library\qt_example\qt_example\third_party\capnotrainer\lib C:\Users\Arsh\Desktop\capno-project\capno-desktop\capnotrainer-library\qt_example\qt_example\third_party\capnotrainer\lib\libcapnotrainergo.lib C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5Widgets.lib C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5Gui.lib C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5SerialPort.lib C:\Qt\Qt5.6.2\5.6\msvc2015_64\lib\Qt5Core.lib 
 QMAKE         = C:\Qt\Qt5.6.2\5.6\msvc2015_64\bin\qmake.exe
 IDC           = idc
 IDL           = midl
@@ -1099,13 +1099,8 @@ release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtGui\qinputmethod.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QButtonGroup \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qbuttongroup.h \
-		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QHeaderView \
-		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qheaderview.h \
-		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qabstractitemview.h \
-		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
-		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qframe.h \
-		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\qabstractitemmodel.h \
-		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\qitemselectionmodel.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QComboBox \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qcombobox.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qabstractitemdelegate.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qstyleoption.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qabstractspinbox.h \
@@ -1116,9 +1111,22 @@ release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qstyle.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qtabbar.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qrubberband.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QHeaderView \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qheaderview.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qabstractitemview.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\qitemselectionmodel.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QMenu \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qmenu.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QMenuBar \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qmenubar.h \
-		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qmenu.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QPushButton \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qpushbutton.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qabstractbutton.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QStatusBar \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qstatusbar.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QToolBar \
