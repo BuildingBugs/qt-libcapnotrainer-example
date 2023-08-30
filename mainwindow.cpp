@@ -18,6 +18,26 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+
+    // create objects for the label and progress bar
+    statusLabel = new QLabel(this);
+    petCO2Label = new QLabel(this);
+    bpmLabel = new QLabel(this);
+    batteryLabel = new QLabel(this);
+
+    // set text for the label
+    statusLabel->setText("Status: N/A\t");
+    petCO2Label->setText("PetCO2: 0 mmHg\t");
+    bpmLabel->setText("Resp. Rate: 0 BPM\t");
+    batteryLabel->setText("Battery: N/A\t");
+
+    // add the two controls to the status bar
+    ui->statusBar->addPermanentWidget(petCO2Label);
+    ui->statusBar->addPermanentWidget(bpmLabel);
+    ui->statusBar->addPermanentWidget(batteryLabel);
+    ui->statusBar->addPermanentWidget(statusLabel);
+
+
     // print out capnoTrainer version
     std::cout << "CapnoTrainer library: " << CapnoTrainer::GetVersion() << std::endl;
 
@@ -76,12 +96,12 @@ void MainWindow::updateGraph()
     // in case the queue is already empty (when the GO is not turned on).
     if (xData.size() > 0){
 
-        double max_time = 30 ; // in seconds
+        double max_time = 60 ; // in seconds
         ui->customPlot->graph(0)->addData(xData, yData);
         // make key axis range scroll with the data (at a constant range size of 8):
         ui->customPlot->xAxis->setRange( xData.at(xData.size()-1) +0.25, max_time, Qt::AlignRight);
-        //ui->customPlot->yAxis->setRange(550, 850);
-        ui->customPlot->graph(0)->rescaleValueAxis();
+        ui->customPlot->yAxis->setRange(0, 40);
+//        ui->customPlot->graph(0)->rescaleValueAxis();
         ui->customPlot->graph(0)->rescaleValueAxis(true);
         ui->customPlot->graph(0)->data()->removeBefore( xData.at(xData.size()-1) - max_time );
         ui->customPlot->replot();
@@ -99,11 +119,22 @@ void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_ty
         {
             if (data_type == DATA_CO2)
             {
-
+                co2Queue.push(data);
             }
             if (data_type == DATA_CAPNO_BATTERY)
             {
-                std::cout << "Received Battery data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
+                batteryLabel->setText(QString("Battery: %1 %\t").arg(data.at(0)));
+                // std::cout << "Received Battery data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
+            }
+            if (data_type == DATA_ETCO2_AVERAGE)
+            {
+                petCO2Label->setText(QString("PetCO2 (Average): %1 mmHg\t").arg(data.at(0)));
+                // std::cout << "Received Battery data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
+            }
+            if (data_type == DATA_BPM_AVERAGE)
+            {
+                bpmLabel->setText(QString("Resp. Rate (Average): %1 BPM\t").arg(data.at(0)));
+                // std::cout << "Received Battery data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
             }
 
             if (data_type == DATA_CAPNO_STATUS)
@@ -117,7 +148,6 @@ void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_ty
         {
             if (data_type == DATA_EMG)
             {
-                co2Queue.push(data);
                 std::cout << "Received EMG data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
             }
         }
@@ -170,38 +200,27 @@ void MainWindow::onConnectBtnClicked() {
     {
         try {
             capnoTrainer.Disconnect();
+
         } catch(const std::exception &e) {
-            std::cout << "Exception: " << e.what() << std::endl;
+            //std::cout << "Exception: " << e.what() << std::endl;
+            statusLabel->setText(QString("Status: %1\t").arg(e.what()));
         }
 
         ui->connectBtn->setText("Connect");
+        statusLabel->setText("Status: Disconnected\t");
     } else {
         try{
             capnoTrainer.Connect(port1.toUtf8().constData(), port2.toUtf8().constData());
-            // startBlockingFunction();
             ui->connectBtn->setText("Disconnect");
+            statusLabel->setText("Status: Connected\t");
         } catch(const std::exception &e){
             std::cout << "Exception: " << e.what() << std::endl;
+            statusLabel->setText(QString("Status: %1\t").arg(e.what()));
         }
         catch (...) {
-            // Catch all handler
-            std::cerr << "An exception occurred!" << std::endl;
+            // std::cerr << "An exception occurred!" << std::endl;
+            statusLabel->setText("Status: Unknown exception\t");
         }
 
     }
 }
-
-//void MainWindow::startBlockingFunction() {
-
-//    QThread* thread = new QThread;
-
-//    CapnoWorker* worker = new CapnoWorker(&capnoTrainer);
-//    worker->moveToThread(thread);
-
-//    connect(thread, &QThread::started, worker, &CapnoWorker::doWork);
-//    connect(worker, &CapnoWorker::finished, thread, &QThread::quit);
-//    connect(worker, &CapnoWorker::finished, worker, &CapnoWorker::deleteLater);
-//    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
-
-//    thread->start();
-//}

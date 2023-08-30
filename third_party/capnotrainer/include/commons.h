@@ -35,6 +35,9 @@ enum DeviceType : uint32_t
 enum DataType : uint8_t
 {
     DATA_CO2,
+    DATA_ETCO2_AVERAGE,
+    DATA_BPM_AVERAGE,
+
     DATA_RR_INTERVALS,
     DATA_HEART_RATE,
     DATA_EMG,

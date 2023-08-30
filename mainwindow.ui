@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>659</width>
-    <height>427</height>
+    <width>917</width>
+    <height>493</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,15 +55,11 @@
              <widget class="QComboBox" name="comboBox2"/>
             </item>
             <item>
-             <layout class="QVBoxLayout" name="verticalLayout_2">
-              <item>
-               <widget class="QPushButton" name="clearGraphBtn">
-                <property name="text">
-                 <string>Clear Graph</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
+             <widget class="QPushButton" name="clearGraphBtn">
+              <property name="text">
+               <string>Clear Graph</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -77,21 +73,13 @@
      </layout>
     </item>
    </layout>
-   <zorder>comboBox1</zorder>
-   <zorder>label</zorder>
-   <zorder>label_2</zorder>
-   <zorder>comboBox2</zorder>
-   <zorder>connectBtn</zorder>
-   <zorder>label_3</zorder>
-   <zorder>clearGraphBtn</zorder>
-   <zorder>comboBox2</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>659</width>
+     <width>917</width>
      <height>20</height>
     </rect>
    </property>
@@ -103,6 +91,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>

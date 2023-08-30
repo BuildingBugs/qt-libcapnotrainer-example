@@ -43,7 +43,6 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QLabel *label_2;
     QComboBox *comboBox2;
-    QVBoxLayout *verticalLayout_2;
     QPushButton *clearGraphBtn;
     QCustomPlot *customPlot;
     QMenuBar *menuBar;
@@ -54,7 +53,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(659, 427);
+        MainWindow->resize(917, 493);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayout_4 = new QVBoxLayout(centralWidget);
@@ -104,16 +103,10 @@ public:
 
         horizontalLayout_2->addWidget(comboBox2);
 
-        verticalLayout_2 = new QVBoxLayout();
-        verticalLayout_2->setSpacing(6);
-        verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
         clearGraphBtn = new QPushButton(centralWidget);
         clearGraphBtn->setObjectName(QStringLiteral("clearGraphBtn"));
 
-        verticalLayout_2->addWidget(clearGraphBtn);
-
-
-        horizontalLayout_2->addLayout(verticalLayout_2);
+        horizontalLayout_2->addWidget(clearGraphBtn);
 
 
         verticalLayout->addLayout(horizontalLayout_2);
@@ -133,16 +126,9 @@ public:
         verticalLayout_4->addLayout(verticalLayout_3);
 
         MainWindow->setCentralWidget(centralWidget);
-        comboBox1->raise();
-        label->raise();
-        label_2->raise();
-        comboBox2->raise();
-        connectBtn->raise();
-        clearGraphBtn->raise();
-        comboBox2->raise();
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 659, 20));
+        menuBar->setGeometry(QRect(0, 0, 917, 20));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -150,6 +136,8 @@ public:
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
+
+        mainToolBar->addSeparator();
 
         retranslateUi(MainWindow);
 

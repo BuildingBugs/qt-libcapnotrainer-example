@@ -261,6 +261,9 @@ debug\moc_mainwindow.cpp: C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QMainW
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\QTimer \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\qtimer.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\qbasictimer.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qframe.h \
 		third_party\capnotrainer\include\commons.h \
 		third_party\asio\asio\include\asio.hpp \
 		third_party\asio\asio\include\asio\any_completion_executor.hpp \
@@ -1972,6 +1975,9 @@ debug\main.obj: main.cpp mainwindow.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\QTimer \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\qtimer.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\qbasictimer.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qframe.h \
 		third_party\capnotrainer\include\commons.h \
 		third_party\asio\asio\include\asio.hpp \
 		third_party\asio\asio\include\asio\any_completion_executor.hpp \
@@ -2680,6 +2686,9 @@ debug\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\QTimer \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\qtimer.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\qbasictimer.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QLabel \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qlabel.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qframe.h \
 		third_party\capnotrainer\include\commons.h \
 		third_party\asio\asio\include\asio.hpp \
 		third_party\asio\asio\include\asio\any_completion_executor.hpp \
@@ -3292,7 +3301,6 @@ debug\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qstyle.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qtabbar.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qrubberband.h \
-		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qframe.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\qabstractitemmodel.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QHBoxLayout \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qboxlayout.h \
@@ -3304,8 +3312,6 @@ debug\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qabstractitemview.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\qitemselectionmodel.h \
-		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QLabel \
-		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qlabel.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QMenuBar \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qmenubar.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\qmenu.h \
