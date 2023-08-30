@@ -18,6 +18,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // print out capnoTrainer version
+    std::cout << "CapnoTrainer library: " << CapnoTrainer::GetVersion() << std::endl;
+
     // Enumerate COM ports
     QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
     for(const QSerialPortInfo &info : availablePorts) {
@@ -33,14 +36,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // setup graph
     ui->customPlot->addGraph(); // Add a graph
-    ui->customPlot->graph(0)->setPen(QPen(Qt::blue)); // Line color blue for first graph
+    ui->customPlot->graph(0)->setPen(QPen(Qt::green)); // Line color blue for first graph
     ui->customPlot->xAxis->setLabel("Time (in sec.)");
     ui->customPlot->yAxis->setLabel("Raw PCO2 (in mmHg)");
-    ui->customPlot->yAxis->setRange(0, 55); // Assuming you want a range from 0 to 100
+    ui->customPlot->yAxis->setRange(0, 1500); // Assuming you want a range from 0 to 100
 
     // setup graph timer (10Hz is perceived as real time).
     connect(&graphPlotTimer, &QTimer::timeout, this, &MainWindow::updateGraph);
-    graphPlotTimer.start(50);
+    graphPlotTimer.start(100);
 
 }
 
@@ -54,29 +57,33 @@ void MainWindow::updateGraph()
     // calculate two new data points:
     QVector<double> xData;
     QVector<double> yData;
-
     QMutexLocker locker(&dataMutex);
+
     while (!co2Queue.empty())
     {
-        std::vector<float> data = co2Queue.front();
+        std::vector<float> data = co2Queue.back();
         co2Queue.pop();
 
         // downsampling the data due to high sampling rate.
         for (size_t i = 0; i < data.size(); i+=co2DataDownsample )
         {
             xData.push_back(((double)co2Samples / (co2Rate/co2DataDownsample)) );
-            yData.push_back((double) data.at(i));
+            yData.push_back((double) data.at( i ));
             co2Samples += 1;
         }
     }
 
     // in case the queue is already empty (when the GO is not turned on).
     if (xData.size() > 0){
+
+        double max_time = 30 ; // in seconds
         ui->customPlot->graph(0)->addData(xData, yData);
         // make key axis range scroll with the data (at a constant range size of 8):
-        ui->customPlot->xAxis->setRange( xData.at(xData.size()-1) +0.25, 30, Qt::AlignRight);
-        ui->customPlot->yAxis->setRange(0, 20);
-        ui->customPlot->graph(0)->data()->removeBefore( xData.at(xData.size()-1) - 15 );
+        ui->customPlot->xAxis->setRange( xData.at(xData.size()-1) +0.25, max_time, Qt::AlignRight);
+        //ui->customPlot->yAxis->setRange(550, 850);
+        ui->customPlot->graph(0)->rescaleValueAxis();
+        ui->customPlot->graph(0)->rescaleValueAxis(true);
+        ui->customPlot->graph(0)->data()->removeBefore( xData.at(xData.size()-1) - max_time );
         ui->customPlot->replot();
     }
 }
@@ -84,68 +91,59 @@ void MainWindow::updateGraph()
 
 void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_type, uint8_t conn_handle, DataType data_type)
 {
-    // this callback function is called every time a
-    // new data point is received on the dongle.
+    QMutexLocker locker(&dataMutex);
 
-    // the data point is parsed based on its device type and
-    // passed to this function.
-
-    // Users are instructed to deep copy paste before the
-    // buffer goes out of scope.
     switch (device_type)
     {
-    case DONGLE_DEVTYPE_CAPNO_GO:
-    {
-        if (data_type == DATA_CO2)
+        case DONGLE_DEVTYPE_CAPNO_GO:
         {
-            QMutexLocker locker(&dataMutex);
-            co2Queue.push(data);
-        }
+            if (data_type == DATA_CO2)
+            {
 
-        if (data_type == DATA_CAPNO_BATTERY)
-        {
-            std::cout << "Received Battery data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
-        }
+            }
+            if (data_type == DATA_CAPNO_BATTERY)
+            {
+                std::cout << "Received Battery data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
+            }
 
-        if (data_type == DATA_CAPNO_STATUS)
-        {
-            // capno status (future implementation)
+            if (data_type == DATA_CAPNO_STATUS)
+            {
+                // NOT IMPLEMENTED
+            }
         }
-    }
-    break;
-
-    case DONGLE_DEVTYPE_EMG:
-    {
-        if (data_type == DATA_EMG)
-        {
-            std::cout << "Received EMG data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
-        }
-    }
-    break;
-
-    case DONGLE_DEVTYPE_HRV:
-    {
-        if (data_type == DATA_RR_INTERVALS)
-        {
-            std::cout << "Receuved RR-interval data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
-        }
-        if (data_type == DATA_HEART_RATE)
-        {
-            // Some HRV devices outputs heart rate
-            // but we have not implemented it as it is
-            // an average heart rate instead of an instanteneous one.
-        }
-    }
-    break;
-
-    case DONGLE_DEVTYPE_CAPNO_6:
-    {
-        // NOT IMPLEMENTED
-    }
-    break;
-
-    default:
         break;
+
+        case DONGLE_DEVTYPE_EMG:
+        {
+            if (data_type == DATA_EMG)
+            {
+                co2Queue.push(data);
+                std::cout << "Received EMG data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
+            }
+        }
+        break;
+
+        case DONGLE_DEVTYPE_HRV:
+        {
+            if (data_type == DATA_RR_INTERVALS)
+            {
+                std::cout << "Received RR-interval data with length: " << data.at(0) << "  with handle: " << (int)conn_handle << std::endl;
+            }
+            if (data_type == DATA_HEART_RATE)
+            {
+                std::cout << "Heart Rate" << std::endl;
+            }
+        }
+        break;
+
+        case DONGLE_DEVTYPE_CAPNO_6:
+        {
+            // NOT IMPLEMENTED
+        }
+        break;
+
+        default:
+            break;
     }
 
 }
@@ -153,12 +151,8 @@ void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_ty
 void MainWindow::onClearGraphBtnClicked(){
 
        std::cout << ui->customPlot->graph(0)->dataCount() << std::endl;
-
-
        ui->customPlot->graph(0)->data()->clear();
        ui->customPlot->replot();
-
-
 }
 
 void MainWindow::onConnectBtnClicked() {
@@ -174,12 +168,17 @@ void MainWindow::onConnectBtnClicked() {
 
     if ( capnoTrainer.isConnected() )
     {
-        capnoTrainer.Disconnect();
+        try {
+            capnoTrainer.Disconnect();
+        } catch(const std::exception &e) {
+            std::cout << "Exception: " << e.what() << std::endl;
+        }
+
         ui->connectBtn->setText("Connect");
     } else {
         try{
             capnoTrainer.Connect(port1.toUtf8().constData(), port2.toUtf8().constData());
-            startBlockingFunction();
+            // startBlockingFunction();
             ui->connectBtn->setText("Disconnect");
         } catch(const std::exception &e){
             std::cout << "Exception: " << e.what() << std::endl;
@@ -190,20 +189,19 @@ void MainWindow::onConnectBtnClicked() {
         }
 
     }
-
 }
 
-void MainWindow::startBlockingFunction() {
+//void MainWindow::startBlockingFunction() {
 
-    QThread* thread = new QThread;
+//    QThread* thread = new QThread;
 
-    CapnoWorker* worker = new CapnoWorker(&capnoTrainer);
-    worker->moveToThread(thread);
+//    CapnoWorker* worker = new CapnoWorker(&capnoTrainer);
+//    worker->moveToThread(thread);
 
-    connect(thread, &QThread::started, worker, &CapnoWorker::doWork);
-    connect(worker, &CapnoWorker::finished, thread, &QThread::quit);
-    connect(worker, &CapnoWorker::finished, worker, &CapnoWorker::deleteLater);
-    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+//    connect(thread, &QThread::started, worker, &CapnoWorker::doWork);
+//    connect(worker, &CapnoWorker::finished, thread, &QThread::quit);
+//    connect(worker, &CapnoWorker::finished, worker, &CapnoWorker::deleteLater);
+//    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
 
-    thread->start();
-}
+//    thread->start();
+//}

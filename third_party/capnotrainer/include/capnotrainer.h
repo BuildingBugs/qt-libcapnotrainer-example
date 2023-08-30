@@ -1,6 +1,8 @@
 #pragma once
 
 #include <iostream>
+#include <thread>
+
 #include "commons.h"
 #include "capnotrainer_go.h"
 #include "capnotrainer_hrv.h"
@@ -19,7 +21,7 @@ public:
     CapnoTrainer(user_cb_t user_cb, bool debug);
     ~CapnoTrainer();
     static const char* GetVersion() {
-        return "v1.0.1";
+        return "v1.0.4";
     }
 
     void Connect(const char * port1, const char *port2);
@@ -34,10 +36,13 @@ public:
 protected:
 
     asio::io_context io;
+    asio::executor_work_guard<asio::io_context::executor_type> work_guard;
     asio::serial_port serial_port_1;
     asio::serial_port serial_port_2;
 
 private:
+    
+    std::thread io_thread;
 
     bool is_connected = false;
     bool debug = false;

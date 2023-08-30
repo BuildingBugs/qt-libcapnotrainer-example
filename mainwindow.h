@@ -3,6 +3,7 @@
 
 #include <queue>
 #include <vector>
+#include <algorithm>
 
 #include <QMainWindow>
 #include <QThread>
@@ -35,8 +36,8 @@ private:
 
     // some variables that should be part of subclasses
     uint32_t co2Samples = 0;
-    uint32_t co2DataDownsample = 5;
-    double co2Rate = 100.0;
+    uint32_t co2DataDownsample = 1;
+    double co2Rate = 10.0;
 
     // this needs to be thread-safe (as shared resource).
     std::queue<std::vector<float>> co2Queue;
@@ -52,8 +53,6 @@ private slots:
     void onConnectBtnClicked();
     void onClearGraphBtnClicked();
     void updateGraph();
-
-
 };
 
 

@@ -14,6 +14,7 @@ public:
     double last_time;
     void handle_incoming_data(std::vector<uint8_t>& data, double current_time);
     std::vector<float> rr_array;
+    std::vector<float> hr_array;
 
 private:
 
