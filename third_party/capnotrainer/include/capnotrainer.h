@@ -16,16 +16,19 @@ typedef std::function<void(std::vector<float> data, DeviceType device_type, uint
 class CapnoTrainer
 {
 public:
-    CapnoTrainer(const char* port1, const char* port2, user_cb_t user_cb, bool debug);
+    CapnoTrainer(user_cb_t user_cb, bool debug);
     ~CapnoTrainer();
     static const char* GetVersion() {
         return "v1.0.1";
     }
 
+    void Connect(const char * port1, const char *port2);
+    void Disconnect();
+    bool isConnected(void);
+   
     void Initialize();
-    void Open();
+    void Read();
     void Write(std::vector<uint8_t>& buffer, uint8_t conn_handle);
-    void Close();
     bool CheckGoDevice(std::vector<CapnoTrainerGo>::iterator& go_device);
 
 protected:
@@ -36,6 +39,7 @@ protected:
 
 private:
 
+    bool is_connected = false;
     bool debug = false;
     int device_max_connection_time = 5000;
 
@@ -49,16 +53,13 @@ private:
     std::vector<CapnoTrainerHrv> hrv_devices;
     std::vector<CapnoTrainerEmg> emg_devices;
 
+
+    void HandleCleanup(void);
     void HandleParser(uint8_t *read_buffer);
     void HandleGoParser(uint8_t *read_buffer);
     void HandleHrvParser(std::vector<uint8_t>& data);
     void HandleEmgParser(std::vector<uint8_t>& data);
     void HandleNameParser(uint8_t *read_buffer);
-
     void HandleDeviceConnections(uint8_t conn_handle);
 
-    
-
 };
-
-

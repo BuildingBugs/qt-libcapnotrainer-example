@@ -8,7 +8,13 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    capnoTrainer(nullptr)
+    capnoTrainer(std::bind(&MainWindow::userCapnoCallback, this,
+                          std::placeholders::_1,
+                          std::placeholders::_2,
+                          std::placeholders::_3,
+                          std::placeholders::_4),
+                 true
+          )
 {
     ui->setupUi(this);
 
@@ -16,47 +22,65 @@ MainWindow::MainWindow(QWidget *parent) :
     QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
     for(const QSerialPortInfo &info : availablePorts) {
         QString portName = info.portName();
+        // probably add pid and vid filter here.
         ui->comboBox1->addItem(portName);
         ui->comboBox2->addItem(portName);
     }
 
     // Connect button signal to slot
-    connect(ui->startButton, &QPushButton::clicked, this, &MainWindow::onButtonClicked);
+    connect(ui->connectBtn, &QPushButton::clicked, this, &MainWindow::onConnectBtnClicked);
+    connect(ui->clearGraphBtn, &QPushButton::clicked, this, &MainWindow::onClearGraphBtnClicked);
 
     // setup graph
     ui->customPlot->addGraph(); // Add a graph
     ui->customPlot->graph(0)->setPen(QPen(Qt::blue)); // Line color blue for first graph
-    ui->customPlot->xAxis->setLabel("Time");
-    ui->customPlot->yAxis->setLabel("Raw PCO2");
+    ui->customPlot->xAxis->setLabel("Time (in sec.)");
+    ui->customPlot->yAxis->setLabel("Raw PCO2 (in mmHg)");
     ui->customPlot->yAxis->setRange(0, 55); // Assuming you want a range from 0 to 100
+
+    // setup graph timer (10Hz is perceived as real time).
+    connect(&graphPlotTimer, &QTimer::timeout, this, &MainWindow::updateGraph);
+    graphPlotTimer.start(50);
 
 }
 
 MainWindow::~MainWindow()
 {
-    delete capnoTrainer;
     delete ui;
 }
 
-void MainWindow::updateGraph(std::vector<float> data)
+void MainWindow::updateGraph()
 {
-    std::cout << "I am here" << std::endl;
-    static QTime time(QTime::currentTime());
     // calculate two new data points:
-    double xSample = 0;
-    for (auto &ySample : data)
+    QVector<double> xData;
+    QVector<double> yData;
+
+    QMutexLocker locker(&dataMutex);
+    while (!co2Queue.empty())
     {
-        xSample = (double) co2Samples / co2Rate;
-        co2Samples += 1;
-        ui->customPlot->graph(0)->addData(xSample, (double) ySample);
-        std::cout << "Sample: " << xSample << "  " << ySample << std::endl;
+        std::vector<float> data = co2Queue.front();
+        co2Queue.pop();
+
+        // downsampling the data due to high sampling rate.
+        for (size_t i = 0; i < data.size(); i+=co2DataDownsample )
+        {
+            xData.push_back(((double)co2Samples / (co2Rate/co2DataDownsample)) );
+            yData.push_back((double) data.at(i));
+            co2Samples += 1;
+        }
     }
 
-
-    // make key axis range scroll with the data (at a constant range size of 8):
-    ui->customPlot->xAxis->setRange(xSample+0.25, xSample + 30, Qt::AlignRight);
-    ui->customPlot->replot();
+    // in case the queue is already empty (when the GO is not turned on).
+    if (xData.size() > 0){
+        ui->customPlot->graph(0)->addData(xData, yData);
+        // make key axis range scroll with the data (at a constant range size of 8):
+        ui->customPlot->xAxis->setRange( xData.at(xData.size()-1) +0.25, 30, Qt::AlignRight);
+        ui->customPlot->yAxis->setRange(0, 20);
+        ui->customPlot->graph(0)->data()->removeBefore( xData.at(xData.size()-1) - 15 );
+        ui->customPlot->replot();
+    }
 }
+
 
 void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_type, uint8_t conn_handle, DataType data_type)
 {
@@ -74,8 +98,8 @@ void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_ty
     {
         if (data_type == DATA_CO2)
         {
-            updateGraph(data);
-            std::cout << "Received CO2 data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
+            QMutexLocker locker(&dataMutex);
+            co2Queue.push(data);
         }
 
         if (data_type == DATA_CAPNO_BATTERY)
@@ -126,7 +150,18 @@ void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_ty
 
 }
 
-void MainWindow::onButtonClicked() {
+void MainWindow::onClearGraphBtnClicked(){
+
+       std::cout << ui->customPlot->graph(0)->dataCount() << std::endl;
+
+
+       ui->customPlot->graph(0)->data()->clear();
+       ui->customPlot->replot();
+
+
+}
+
+void MainWindow::onConnectBtnClicked() {
     QString port1 = ui->comboBox1->currentText();
     QString port2 = ui->comboBox2->currentText();
 
@@ -137,21 +172,23 @@ void MainWindow::onButtonClicked() {
         return;
     }
 
-    if (ui->startButton->text() == "Disconnect")
+    if ( capnoTrainer.isConnected() )
     {
-        capnoTrainer->Close();
-        ui->startButton->setText("Connect");
+        capnoTrainer.Disconnect();
+        ui->connectBtn->setText("Connect");
     } else {
+        try{
+            capnoTrainer.Connect(port1.toUtf8().constData(), port2.toUtf8().constData());
+            startBlockingFunction();
+            ui->connectBtn->setText("Disconnect");
+        } catch(const std::exception &e){
+            std::cout << "Exception: " << e.what() << std::endl;
+        }
+        catch (...) {
+            // Catch all handler
+            std::cerr << "An exception occurred!" << std::endl;
+        }
 
-        auto userCallback = std::bind(&MainWindow::userCapnoCallback, this,
-                                       std::placeholders::_1, std::placeholders::_2,
-                                      std::placeholders::_3, std::placeholders::_4);
-
-        capnoTrainer = new CapnoTrainer(port1.toUtf8().constData(), port2.toUtf8().constData(), userCallback, true);
-
-        startBlockingFunction();
-
-        ui->startButton->setText("Disconnect");
     }
 
 }
@@ -159,8 +196,8 @@ void MainWindow::onButtonClicked() {
 void MainWindow::startBlockingFunction() {
 
     QThread* thread = new QThread;
-    CapnoWorker* worker = new CapnoWorker(capnoTrainer);  // assuming capno is a member of MainWindow
 
+    CapnoWorker* worker = new CapnoWorker(&capnoTrainer);
     worker->moveToThread(thread);
 
     connect(thread, &QThread::started, worker, &CapnoWorker::doWork);

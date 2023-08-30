@@ -34,9 +34,10 @@ public:
     QLabel *label;
     QLabel *label_2;
     QComboBox *comboBox2;
-    QPushButton *startButton;
+    QPushButton *connectBtn;
     QLabel *label_3;
     QCustomPlot *customPlot;
+    QPushButton *clearGraphBtn;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -60,15 +61,18 @@ public:
         comboBox2 = new QComboBox(centralWidget);
         comboBox2->setObjectName(QStringLiteral("comboBox2"));
         comboBox2->setGeometry(QRect(100, 60, 141, 31));
-        startButton = new QPushButton(centralWidget);
-        startButton->setObjectName(QStringLiteral("startButton"));
-        startButton->setGeometry(QRect(270, 20, 131, 71));
+        connectBtn = new QPushButton(centralWidget);
+        connectBtn->setObjectName(QStringLiteral("connectBtn"));
+        connectBtn->setGeometry(QRect(270, 20, 131, 71));
         label_3 = new QLabel(centralWidget);
         label_3->setObjectName(QStringLiteral("label_3"));
         label_3->setGeometry(QRect(30, 110, 341, 71));
         customPlot = new QCustomPlot(centralWidget);
         customPlot->setObjectName(QStringLiteral("customPlot"));
         customPlot->setGeometry(QRect(40, 100, 951, 501));
+        clearGraphBtn = new QPushButton(centralWidget);
+        clearGraphBtn->setObjectName(QStringLiteral("clearGraphBtn"));
+        clearGraphBtn->setGeometry(QRect(430, 20, 131, 71));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -91,8 +95,9 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
         label->setText(QApplication::translate("MainWindow", "Port 1", 0));
         label_2->setText(QApplication::translate("MainWindow", "Port 2", 0));
-        startButton->setText(QApplication::translate("MainWindow", "Connect", 0));
+        connectBtn->setText(QApplication::translate("MainWindow", "Connect", 0));
         label_3->setText(QString());
+        clearGraphBtn->setText(QApplication::translate("MainWindow", "Clear Graph", 0));
     } // retranslateUi
 
 };
