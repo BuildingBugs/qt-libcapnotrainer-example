@@ -36,6 +36,7 @@ enum DataType : uint8_t
 {
     DATA_CO2,
     DATA_ETCO2_AVERAGE,
+    DATA_INSP_CO2_AVERAGE,
     DATA_BPM_AVERAGE,
 
     DATA_RR_INTERVALS,

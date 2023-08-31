@@ -14,6 +14,7 @@ public:
     std::vector<float> co2_array;
     std::vector<float> battery_array;
     std::vector<float> etco2_array;
+    std::vector<float> inspco2_array;
     std::vector<float> bpm_array;
     double last_time;
 
@@ -48,6 +49,9 @@ public:
 
     std::vector<uint8_t> handle_get_gas_temperature_req();
     void handle_get_gas_temperature_res(std::vector<uint8_t>& buffer);
+
+    std::vector<uint8_t> handle_set_etco2_time_period_req();
+    void handle_set_etco2_time_period_res(std::vector<uint8_t>& buffer);
 
     std::vector<uint8_t> handle_get_battery_status_req();
     void handle_get_battery_status_res(std::vector<uint8_t>& buffer);

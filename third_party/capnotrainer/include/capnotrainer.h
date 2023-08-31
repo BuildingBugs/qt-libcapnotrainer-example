@@ -42,6 +42,7 @@ protected:
 
 private:
     
+
     std::thread io_thread;
 
     bool is_connected = false;
@@ -51,14 +52,16 @@ private:
     user_cb_t user_cb;
     std::vector<std::thread> tg;
 
-    uint8_t read_buffer[CAPNOTRAINER_SERIAL_READ_SIZE];
+    uint8_t read_buffer_1[CAPNOTRAINER_SERIAL_READ_SIZE];
+    uint8_t read_buffer_2[CAPNOTRAINER_SERIAL_READ_SIZE];
 
     std::vector<uint8_t> device_handles;
     std::vector<CapnoTrainerGo> go_devices;
     std::vector<CapnoTrainerHrv> hrv_devices;
     std::vector<CapnoTrainerEmg> emg_devices;
 
-
+    void ReadFromPort1(void);
+    void ReadFromPort2(void);
     void HandleCleanup(void);
     void HandleParser(uint8_t *read_buffer);
     void HandleGoParser(uint8_t *read_buffer);

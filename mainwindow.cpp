@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QSerialPortInfo>
+#include <QSharedPointer>
 #include <QMessageBox>
 #include <cmath>
 
@@ -13,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
                           std::placeholders::_2,
                           std::placeholders::_3,
                           std::placeholders::_4),
-                 true
+                 false
           )
 {
     ui->setupUi(this);
@@ -22,24 +23,23 @@ MainWindow::MainWindow(QWidget *parent) :
     // create objects for the label and progress bar
     statusLabel = new QLabel(this);
     petCO2Label = new QLabel(this);
+    insCO2Label = new QLabel(this);
     bpmLabel = new QLabel(this);
     batteryLabel = new QLabel(this);
 
     // set text for the label
-    statusLabel->setText("Status: N/A\t");
-    petCO2Label->setText("PetCO2: 0 mmHg\t");
+    petCO2Label->setText("PetCO2: 0 mmHg \t\t");
+    insCO2Label->setText("Insp. CO2: 0 mmHg \t\t");
     bpmLabel->setText("Resp. Rate: 0 BPM\t");
     batteryLabel->setText("Battery: N/A\t");
+    statusLabel->setText("Status: N/A\t");
 
-    // add the two controls to the status bar
+    // add the labels to the status bar
     ui->statusBar->addPermanentWidget(petCO2Label);
+    ui->statusBar->addPermanentWidget(insCO2Label);
     ui->statusBar->addPermanentWidget(bpmLabel);
     ui->statusBar->addPermanentWidget(batteryLabel);
     ui->statusBar->addPermanentWidget(statusLabel);
-
-
-    // print out capnoTrainer version
-    std::cout << "CapnoTrainer library: " << CapnoTrainer::GetVersion() << std::endl;
 
     // Enumerate COM ports
     QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
@@ -54,16 +54,18 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->connectBtn, &QPushButton::clicked, this, &MainWindow::onConnectBtnClicked);
     connect(ui->clearGraphBtn, &QPushButton::clicked, this, &MainWindow::onClearGraphBtnClicked);
 
-    // setup graph
+    // setup graph.
     ui->customPlot->addGraph(); // Add a graph
-    ui->customPlot->graph(0)->setPen(QPen(Qt::green)); // Line color blue for first graph
+    ui->customPlot->graph(0)->setPen(QPen(Qt::green));
     ui->customPlot->xAxis->setLabel("Time (in sec.)");
     ui->customPlot->yAxis->setLabel("Raw PCO2 (in mmHg)");
-    ui->customPlot->yAxis->setRange(0, 1500); // Assuming you want a range from 0 to 100
+    ui->customPlot->yAxis->setRange(0, 50);
+    QSharedPointer<TimeAxisTicker> timeTicker(new TimeAxisTicker);
+    ui->customPlot->xAxis->setTicker(timeTicker);
 
     // setup graph timer (10Hz is perceived as real time).
     connect(&graphPlotTimer, &QTimer::timeout, this, &MainWindow::updateGraph);
-    graphPlotTimer.start(100);
+    graphPlotTimer.start(50);
 
 }
 
@@ -81,10 +83,10 @@ void MainWindow::updateGraph()
 
     while (!co2Queue.empty())
     {
-        std::vector<float> data = co2Queue.back();
+        std::vector<float> data = co2Queue.front();
         co2Queue.pop();
 
-        // downsampling the data due to high sampling rate.
+        // here you can downsample the data.
         for (size_t i = 0; i < data.size(); i+=co2DataDownsample )
         {
             xData.push_back(((double)co2Samples / (co2Rate/co2DataDownsample)) );
@@ -98,11 +100,9 @@ void MainWindow::updateGraph()
 
         double max_time = 60 ; // in seconds
         ui->customPlot->graph(0)->addData(xData, yData);
-        // make key axis range scroll with the data (at a constant range size of 8):
+        // make key axis range scroll with the data (at a constant range):
         ui->customPlot->xAxis->setRange( xData.at(xData.size()-1) +0.25, max_time, Qt::AlignRight);
         ui->customPlot->yAxis->setRange(0, 40);
-//        ui->customPlot->graph(0)->rescaleValueAxis();
-        ui->customPlot->graph(0)->rescaleValueAxis(true);
         ui->customPlot->graph(0)->data()->removeBefore( xData.at(xData.size()-1) - max_time );
         ui->customPlot->replot();
     }
@@ -124,17 +124,18 @@ void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_ty
             if (data_type == DATA_CAPNO_BATTERY)
             {
                 batteryLabel->setText(QString("Battery: %1 %\t").arg(data.at(0)));
-                // std::cout << "Received Battery data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
             }
             if (data_type == DATA_ETCO2_AVERAGE)
             {
                 petCO2Label->setText(QString("PetCO2 (Average): %1 mmHg\t").arg(data.at(0)));
-                // std::cout << "Received Battery data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
+            }
+            if (data_type == DATA_INSP_CO2_AVERAGE)
+            {
+                insCO2Label->setText(QString("Insp. CO2 (Average): %1 mmHg\t").arg(data.at(0)));
             }
             if (data_type == DATA_BPM_AVERAGE)
             {
                 bpmLabel->setText(QString("Resp. Rate (Average): %1 BPM\t").arg(data.at(0)));
-                // std::cout << "Received Battery data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
             }
 
             if (data_type == DATA_CAPNO_STATUS)
