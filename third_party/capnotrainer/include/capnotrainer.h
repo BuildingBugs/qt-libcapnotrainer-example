@@ -30,6 +30,7 @@ public:
    
     void Initialize();
     void Read();
+    void HandleWriteTimer();
     void Write(std::vector<uint8_t>& buffer, uint8_t conn_handle);
     bool CheckGoDevice(std::vector<CapnoTrainerGo>::iterator& go_device);
 
@@ -46,6 +47,7 @@ public:
     asio::executor_work_guard<asio::io_context::executor_type> work_guard;
     asio::serial_port serial_port_1;
     asio::serial_port serial_port_2;
+    asio::steady_timer write_timer;
 
 
 

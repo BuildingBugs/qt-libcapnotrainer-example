@@ -4413,6 +4413,17 @@ debug\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\QElapsedTimer \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtCore\QTimeZone \
 		ui_mainwindow.h \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QAction \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QApplication \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QButtonGroup \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QComboBox \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QHBoxLayout \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QHeaderView \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QMenuBar \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QPushButton \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QStatusBar \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QToolBar \
+		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtWidgets\QVBoxLayout \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtSerialPort\QSerialPortInfo \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtSerialPort\qserialportinfo.h \
 		C:\Qt\Qt5.6.2\5.6\msvc2015_64\include\QtSerialPort\qserialportglobal.h \
