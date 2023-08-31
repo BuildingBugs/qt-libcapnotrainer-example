@@ -33,7 +33,14 @@ public:
     void Write(std::vector<uint8_t>& buffer, uint8_t conn_handle);
     bool CheckGoDevice(std::vector<CapnoTrainerGo>::iterator& go_device);
 
-protected:
+
+    std::vector<uint8_t> device_handles;
+    std::vector<CapnoTrainerGo> go_devices;
+    std::vector<CapnoTrainerHrv> hrv_devices;
+    std::vector<CapnoTrainerEmg> emg_devices;
+
+
+// protected:
 
     asio::io_context io;
     asio::executor_work_guard<asio::io_context::executor_type> work_guard;
@@ -41,12 +48,8 @@ protected:
     asio::serial_port serial_port_2;
 
 
-    std::vector<uint8_t> device_handles;
-    std::vector<CapnoTrainerGo> go_devices;
-    std::vector<CapnoTrainerHrv> hrv_devices;
-    std::vector<CapnoTrainerEmg> emg_devices;
 
-private:
+// private:
 
     std::thread io_thread;
 
