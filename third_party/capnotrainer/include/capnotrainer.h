@@ -21,7 +21,7 @@ public:
     CapnoTrainer(user_cb_t user_cb, bool debug);
     ~CapnoTrainer();
     static const char* GetVersion() {
-        return "v1.0.4";
+        return "v1.0.5";
     }
 
     void Connect(const char * port1, const char *port2);
@@ -40,8 +40,13 @@ protected:
     asio::serial_port serial_port_1;
     asio::serial_port serial_port_2;
 
+
+    std::vector<uint8_t> device_handles;
+    std::vector<CapnoTrainerGo> go_devices;
+    std::vector<CapnoTrainerHrv> hrv_devices;
+    std::vector<CapnoTrainerEmg> emg_devices;
+
 private:
-    
 
     std::thread io_thread;
 
@@ -55,10 +60,6 @@ private:
     uint8_t read_buffer_1[CAPNOTRAINER_SERIAL_READ_SIZE];
     uint8_t read_buffer_2[CAPNOTRAINER_SERIAL_READ_SIZE];
 
-    std::vector<uint8_t> device_handles;
-    std::vector<CapnoTrainerGo> go_devices;
-    std::vector<CapnoTrainerHrv> hrv_devices;
-    std::vector<CapnoTrainerEmg> emg_devices;
 
     void ReadFromPort1(void);
     void ReadFromPort2(void);
