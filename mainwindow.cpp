@@ -190,7 +190,6 @@ void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_ty
         {
             if (data_type == DATA_EMG)
             {
-                std::cout << "Received EMG data with length: " << data.size() << "  with handle: " << (int)conn_handle << std::endl;
             }
         }
         break;
@@ -209,9 +208,10 @@ void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_ty
         break;
         case DONGLE_DEVTYPE_O2_RING:
         {
+
             if (data_type == DATA_SPO2)
             {
-                heartRateLabel->setText(QString("SpO2: %1%\t").arg(data.at(0)));
+                spO2Label->setText(QString("SpO2: %1%\t").arg(data.at(0)));
             }
             if (data_type == DATA_HEART_RATE)
             {
@@ -219,15 +219,15 @@ void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_ty
             }
             if (data_type == DATA_FINGER_PRESENT)
             {
-//                heartRateLabel->setText(QString("Heart Rate: %1 (bpm)\t").arg(data.at(0)));
             }
             if (data_type == DATA_MOTION_PRESENT)
             {
-//                heartRateLabel->setText(QString("Heart Rate: %1 (bpm)\t").arg(data.at(0)));
             }
             if (data_type == DATA_BATTERY)
             {
-//                heartRateLabel->setText(QString("Heart Rate: %1 (bpm)\t").arg(data.at(0)));
+            }
+            if (data_type == DATA_HR_STRENGTH)
+            {
             }
         }
         break;
@@ -263,6 +263,11 @@ void MainWindow::onRefreshPortBtnClicked(){
         // probably add pid and vid filter here.
         ui->comboBox1->addItem(portName);
         ui->comboBox2->addItem(portName);
+    }
+
+    if ( availablePorts.size() >= 2 ){
+        ui->comboBox1->setCurrentIndex(0);
+        ui->comboBox1->setCurrentIndex(1);
     }
 }
 

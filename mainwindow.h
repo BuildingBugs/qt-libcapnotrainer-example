@@ -41,6 +41,8 @@ private:
     QLabel *bpmLabel;
     QLabel *heartRateLabel;
     QLabel *spO2Label;
+//    QLabel *o2RingFingerPresent;
+
 
 
     void userCapnoCallback(std::vector<float> data, DeviceType device_type, uint8_t conn_handle, DataType data_type);
