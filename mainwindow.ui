@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>917</width>
-    <height>493</height>
+    <width>1052</width>
+    <height>791</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,20 +18,20 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4"/>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
-             <widget class="QLabel" name="label">
+             <widget class="QPushButton" name="refreshBtn">
               <property name="text">
-               <string>Port 1</string>
+               <string>Refresh Ports</string>
               </property>
              </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="comboBox1"/>
             </item>
             <item>
              <widget class="QPushButton" name="connectBtn">
@@ -40,10 +40,27 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QPushButton" name="clearGraphBtn">
+              <property name="text">
+               <string>Clear Graph</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Port 1</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboBox2"/>
+            </item>
             <item>
              <widget class="QLabel" name="label_2">
               <property name="text">
@@ -52,14 +69,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBox2"/>
-            </item>
-            <item>
-             <widget class="QPushButton" name="clearGraphBtn">
-              <property name="text">
-               <string>Clear Graph</string>
-              </property>
-             </widget>
+             <widget class="QComboBox" name="comboBox1"/>
             </item>
            </layout>
           </item>
@@ -79,7 +89,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>917</width>
+     <width>1052</width>
      <height>20</height>
     </rect>
    </property>

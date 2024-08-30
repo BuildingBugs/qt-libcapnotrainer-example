@@ -7,6 +7,7 @@
 #include "capnotrainer_go.h"
 #include "capnotrainer_hrv.h"
 #include "capnotrainer_emg.h"
+#include "capnotrainer_o2.h"
 
 #define CAPNOTRAINER_SERIAL_READ_SIZE 64
 #define CAPNOTRAINER_SERIAL_WRITE_SIZE 16
@@ -21,7 +22,7 @@ public:
     CapnoTrainer(user_cb_t user_cb, bool debug);
     ~CapnoTrainer();
     static const char* GetVersion() {
-        return "v1.0.5";
+        return "v1.0.7";
     }
 
     void Connect(const char * port1, const char *port2);
@@ -34,11 +35,11 @@ public:
     void Write(std::vector<uint8_t>& buffer, uint8_t conn_handle);
     bool CheckGoDevice(std::vector<CapnoTrainerGo>::iterator& go_device);
 
-
     std::vector<uint8_t> device_handles;
     std::vector<CapnoTrainerGo> go_devices;
     std::vector<CapnoTrainerHrv> hrv_devices;
     std::vector<CapnoTrainerEmg> emg_devices;
+    std::vector<CapnoTrainerO2> o2_devices;
 
 
 // protected:
@@ -73,6 +74,7 @@ public:
     void HandleGoParser(uint8_t *read_buffer);
     void HandleHrvParser(std::vector<uint8_t>& data);
     void HandleEmgParser(std::vector<uint8_t>& data);
+    void HandleO2Parser(std::vector<uint8_t>& data);
     void HandleNameParser(uint8_t *read_buffer);
     void HandleDeviceConnections(uint8_t conn_handle);
 

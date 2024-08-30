@@ -39,6 +39,9 @@ private:
     QLabel *insCO2Label;
     QLabel *batteryLabel;
     QLabel *bpmLabel;
+    QLabel *heartRateLabel;
+    QLabel *spO2Label;
+
 
     void userCapnoCallback(std::vector<float> data, DeviceType device_type, uint8_t conn_handle, DataType data_type);
     void startBlockingFunction(void);
@@ -54,10 +57,14 @@ private:
     uint32_t co2DataDownsample = 1;
     double co2Rate = 100.0; // sample rate is almost 100.
 
+    uint32_t rrSamples = 0;
+    uint32_t rrRate = 10.0;
+
     // this needs to be thread-safe (as shared resource).
     // you can make the similar one for HRV (rr-interval and hr)
     // or emgs 1 - 4 channels (see user_callback).
     std::queue<std::vector<float>> co2Queue;
+    std::queue<std::vector<float>> rrQueue;
 
     // graph timer
     QTimer graphPlotTimer;
@@ -67,6 +74,7 @@ private:
 
 private slots:
     void onConnectBtnClicked();
+    void onRefreshPortBtnClicked();
     void onClearGraphBtnClicked();
     void updateGraph();
 };

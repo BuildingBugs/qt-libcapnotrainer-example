@@ -34,16 +34,18 @@ public:
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_4;
     QVBoxLayout *verticalLayout_3;
+    QHBoxLayout *horizontalLayout_4;
     QHBoxLayout *horizontalLayout_3;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout;
-    QLabel *label;
-    QComboBox *comboBox1;
+    QPushButton *refreshBtn;
     QPushButton *connectBtn;
-    QHBoxLayout *horizontalLayout_2;
-    QLabel *label_2;
-    QComboBox *comboBox2;
     QPushButton *clearGraphBtn;
+    QHBoxLayout *horizontalLayout_2;
+    QLabel *label;
+    QComboBox *comboBox2;
+    QLabel *label_2;
+    QComboBox *comboBox1;
     QCustomPlot *customPlot;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
@@ -53,7 +55,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(917, 493);
+        MainWindow->resize(1052, 791);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayout_4 = new QVBoxLayout(centralWidget);
@@ -63,6 +65,12 @@ public:
         verticalLayout_3 = new QVBoxLayout();
         verticalLayout_3->setSpacing(6);
         verticalLayout_3->setObjectName(QStringLiteral("verticalLayout_3"));
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setSpacing(6);
+        horizontalLayout_4->setObjectName(QStringLiteral("horizontalLayout_4"));
+
+        verticalLayout_3->addLayout(horizontalLayout_4);
+
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setSpacing(6);
         horizontalLayout_3->setObjectName(QStringLiteral("horizontalLayout_3"));
@@ -72,20 +80,20 @@ public:
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        label = new QLabel(centralWidget);
-        label->setObjectName(QStringLiteral("label"));
+        refreshBtn = new QPushButton(centralWidget);
+        refreshBtn->setObjectName(QStringLiteral("refreshBtn"));
 
-        horizontalLayout->addWidget(label);
-
-        comboBox1 = new QComboBox(centralWidget);
-        comboBox1->setObjectName(QStringLiteral("comboBox1"));
-
-        horizontalLayout->addWidget(comboBox1);
+        horizontalLayout->addWidget(refreshBtn);
 
         connectBtn = new QPushButton(centralWidget);
         connectBtn->setObjectName(QStringLiteral("connectBtn"));
 
         horizontalLayout->addWidget(connectBtn);
+
+        clearGraphBtn = new QPushButton(centralWidget);
+        clearGraphBtn->setObjectName(QStringLiteral("clearGraphBtn"));
+
+        horizontalLayout->addWidget(clearGraphBtn);
 
 
         verticalLayout->addLayout(horizontalLayout);
@@ -93,20 +101,25 @@ public:
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
-        label_2 = new QLabel(centralWidget);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label = new QLabel(centralWidget);
+        label->setObjectName(QStringLiteral("label"));
 
-        horizontalLayout_2->addWidget(label_2);
+        horizontalLayout_2->addWidget(label);
 
         comboBox2 = new QComboBox(centralWidget);
         comboBox2->setObjectName(QStringLiteral("comboBox2"));
 
         horizontalLayout_2->addWidget(comboBox2);
 
-        clearGraphBtn = new QPushButton(centralWidget);
-        clearGraphBtn->setObjectName(QStringLiteral("clearGraphBtn"));
+        label_2 = new QLabel(centralWidget);
+        label_2->setObjectName(QStringLiteral("label_2"));
 
-        horizontalLayout_2->addWidget(clearGraphBtn);
+        horizontalLayout_2->addWidget(label_2);
+
+        comboBox1 = new QComboBox(centralWidget);
+        comboBox1->setObjectName(QStringLiteral("comboBox1"));
+
+        horizontalLayout_2->addWidget(comboBox1);
 
 
         verticalLayout->addLayout(horizontalLayout_2);
@@ -128,7 +141,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 917, 20));
+        menuBar->setGeometry(QRect(0, 0, 1052, 20));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -147,10 +160,11 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
-        label->setText(QApplication::translate("MainWindow", "Port 1", 0));
+        refreshBtn->setText(QApplication::translate("MainWindow", "Refresh Ports", 0));
         connectBtn->setText(QApplication::translate("MainWindow", "Connect", 0));
-        label_2->setText(QApplication::translate("MainWindow", "Port 2", 0));
         clearGraphBtn->setText(QApplication::translate("MainWindow", "Clear Graph", 0));
+        label->setText(QApplication::translate("MainWindow", "Port 1", 0));
+        label_2->setText(QApplication::translate("MainWindow", "Port 2", 0));
     } // retranslateUi
 
 };

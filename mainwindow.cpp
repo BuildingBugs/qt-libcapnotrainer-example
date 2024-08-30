@@ -26,42 +26,57 @@ MainWindow::MainWindow(QWidget *parent) :
     insCO2Label = new QLabel(this);
     bpmLabel = new QLabel(this);
     batteryLabel = new QLabel(this);
+    heartRateLabel = new QLabel(this);
+    spO2Label = new QLabel(this);
+
+
 
     // set text for the label
-    petCO2Label->setText("PetCO2: 0 mmHg \t\t");
-    insCO2Label->setText("Insp. CO2: 0 mmHg \t\t");
-    bpmLabel->setText("Resp. Rate: 0 BPM\t");
+    heartRateLabel->setText("Heart Rate: 0 bpm\t");
+    spO2Label->setText("SpO2: 0%\t");
+    petCO2Label->setText("PetCO2: 0 (mmHg)\t");
+    insCO2Label->setText("Insp. CO2: 0 (mmHg)\t");
+    bpmLabel->setText("Resp. Rate: 0 (BPM)\t");
     batteryLabel->setText("Battery: N/A\t");
     statusLabel->setText("Status: N/A\t");
 
     // add the labels to the status bar
+    ui->statusBar->addPermanentWidget(heartRateLabel);
+    ui->statusBar->addPermanentWidget(spO2Label);
     ui->statusBar->addPermanentWidget(petCO2Label);
     ui->statusBar->addPermanentWidget(insCO2Label);
     ui->statusBar->addPermanentWidget(bpmLabel);
     ui->statusBar->addPermanentWidget(batteryLabel);
     ui->statusBar->addPermanentWidget(statusLabel);
 
-    // Enumerate COM ports
-    QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
-    for(const QSerialPortInfo &info : availablePorts) {
-        QString portName = info.portName();
-        // probably add pid and vid filter here.
-        ui->comboBox1->addItem(portName);
-        ui->comboBox2->addItem(portName);
-    }
+    onRefreshPortBtnClicked();
 
     // Connect button signal to slot
     connect(ui->connectBtn, &QPushButton::clicked, this, &MainWindow::onConnectBtnClicked);
+    connect(ui->refreshBtn, &QPushButton::clicked, this, &MainWindow::onRefreshPortBtnClicked);
     connect(ui->clearGraphBtn, &QPushButton::clicked, this, &MainWindow::onClearGraphBtnClicked);
 
     // setup graph.
     ui->customPlot->addGraph(); // Add a graph
+    ui->customPlot->addGraph(ui->customPlot->xAxis2, ui->customPlot->yAxis2); // Add a graph
     ui->customPlot->graph(0)->setPen(QPen(Qt::green));
+    ui->customPlot->graph(1)->setPen(QPen(Qt::blue));
+
+
     ui->customPlot->xAxis->setLabel("Time (in sec.)");
     ui->customPlot->yAxis->setLabel("Raw PCO2 (in mmHg)");
     ui->customPlot->yAxis->setRange(0, 50);
     QSharedPointer<TimeAxisTicker> timeTicker(new TimeAxisTicker);
     ui->customPlot->xAxis->setTicker(timeTicker);
+
+    ui->customPlot->xAxis2->setLabel("Time (in sec.)");
+    ui->customPlot->yAxis2->setLabel("HRV (in msec.)");
+    ui->customPlot->yAxis2->setRange(500, 1400);
+    ui->customPlot->xAxis2->setVisible(true);
+    ui->customPlot->yAxis2->setVisible(true);
+    QSharedPointer<TimeAxisTicker> timeTicker2(new TimeAxisTicker);
+    ui->customPlot->xAxis2->setTicker(timeTicker2);
+
 
     // setup graph timer (10Hz is perceived as real time).
     connect(&graphPlotTimer, &QTimer::timeout, this, &MainWindow::updateGraph);
@@ -79,6 +94,8 @@ void MainWindow::updateGraph()
     // calculate two new data points:
     QVector<double> xData;
     QVector<double> yData;
+    QVector<double> rrXData;
+    QVector<double> rrYData;
     QMutexLocker locker(&dataMutex);
 
     while (!co2Queue.empty())
@@ -95,10 +112,22 @@ void MainWindow::updateGraph()
         }
     }
 
+    while (!rrQueue.empty())
+    {
+        std::vector<float> data = rrQueue.front();
+        rrQueue.pop();
+        for (size_t i = 0; i < data.size(); i+=1 )
+        {
+            rrXData.push_back(( (double)rrSamples / rrRate ));
+            rrYData.push_back((double) data.at( i ));
+            rrSamples += 1;
+        }
+    }
+
+    double max_time = 60*3.0 ; // in seconds
+
     // in case the queue is already empty (when the GO is not turned on).
     if (xData.size() > 0){
-
-        double max_time = 60 ; // in seconds
         ui->customPlot->graph(0)->addData(xData, yData);
         // make key axis range scroll with the data (at a constant range):
         ui->customPlot->xAxis->setRange( xData.at(xData.size()-1) +0.25, max_time, Qt::AlignRight);
@@ -106,13 +135,25 @@ void MainWindow::updateGraph()
         ui->customPlot->graph(0)->data()->removeBefore( xData.at(xData.size()-1) - max_time );
         ui->customPlot->replot();
     }
+
+
+    if (rrXData.size() > 0){
+        ui->customPlot->graph(1)->addData(rrXData, rrYData);
+        // make key axis range scroll with the data (at a constant range):
+        ui->customPlot->xAxis2->setRange( rrXData.at(rrXData.size()-1) +0.25, max_time, Qt::AlignRight);
+        ui->customPlot->yAxis2->setRange(500 , 1200);
+        ui->customPlot->graph(1)->data()->removeBefore( rrXData.at(rrXData.size()-1) - max_time );
+        ui->customPlot->replot();
+    }
+
 }
 
-
+// this function is called from libcapnotrainergo everytime
+// a new data point is available on the USB dongle (either from GO, HRV, EMG or SpO2 devices)
 void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_type, uint8_t conn_handle, DataType data_type)
 {
     QMutexLocker locker(&dataMutex);
-
+    conn_handle;
     switch (device_type)
     {
         case DONGLE_DEVTYPE_CAPNO_GO:
@@ -121,21 +162,21 @@ void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_ty
             {
                 co2Queue.push(data);
             }
-            if (data_type == DATA_CAPNO_BATTERY)
+            if (data_type == DATA_BATTERY)
             {
-                batteryLabel->setText(QString("Battery: %1 %\t").arg(data.at(0)));
+                batteryLabel->setText(QString("Battery: %1%\t\t").arg(data.at(0)));
             }
             if (data_type == DATA_ETCO2_AVERAGE)
             {
-                petCO2Label->setText(QString("PetCO2 (Average): %1 mmHg\t").arg(data.at(0)));
+                petCO2Label->setText(QString("PetCO2 (Avg.): %1 mmHg\t\t").arg(data.at(0)));
             }
             if (data_type == DATA_INSP_CO2_AVERAGE)
             {
-                insCO2Label->setText(QString("Insp. CO2 (Average): %1 mmHg\t").arg(data.at(0)));
+                insCO2Label->setText(QString("Insp. CO2 (Avg.): %1 mmHg\t\t").arg(data.at(0)));
             }
             if (data_type == DATA_BPM_AVERAGE)
             {
-                bpmLabel->setText(QString("Resp. Rate (Average): %1 BPM\t").arg(data.at(0)));
+                bpmLabel->setText(QString("Resp. Rate (Avg.): %1 BPM\t\t").arg(data.at(0)));
             }
 
             if (data_type == DATA_CAPNO_STATUS)
@@ -158,11 +199,35 @@ void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_ty
         {
             if (data_type == DATA_RR_INTERVALS)
             {
-                std::cout << "Received RR-interval data with length: " << data.at(0) << "  with handle: " << (int)conn_handle << std::endl;
+                rrQueue.push(data);
             }
             if (data_type == DATA_HEART_RATE)
             {
-                std::cout << "Heart Rate" << std::endl;
+                heartRateLabel->setText(QString("Heart Rate: %1 bpm\t").arg(data.at(0)));
+            }
+        }
+        break;
+        case DONGLE_DEVTYPE_O2_RING:
+        {
+            if (data_type == DATA_SPO2)
+            {
+                heartRateLabel->setText(QString("SpO2: %1%\t").arg(data.at(0)));
+            }
+            if (data_type == DATA_HEART_RATE)
+            {
+                heartRateLabel->setText(QString("Heart Rate: %1 bpm\t").arg(data.at(0)));
+            }
+            if (data_type == DATA_FINGER_PRESENT)
+            {
+//                heartRateLabel->setText(QString("Heart Rate: %1 (bpm)\t").arg(data.at(0)));
+            }
+            if (data_type == DATA_MOTION_PRESENT)
+            {
+//                heartRateLabel->setText(QString("Heart Rate: %1 (bpm)\t").arg(data.at(0)));
+            }
+            if (data_type == DATA_BATTERY)
+            {
+//                heartRateLabel->setText(QString("Heart Rate: %1 (bpm)\t").arg(data.at(0)));
             }
         }
         break;
@@ -181,9 +246,24 @@ void MainWindow::userCapnoCallback(std::vector<float> data, DeviceType device_ty
 
 void MainWindow::onClearGraphBtnClicked(){
 
-       std::cout << ui->customPlot->graph(0)->dataCount() << std::endl;
+       // std::cout << ui->customPlot->graph(0)->dataCount() << std::endl;
        ui->customPlot->graph(0)->data()->clear();
+       ui->customPlot->graph(1)->data()->clear();
        ui->customPlot->replot();
+}
+
+void MainWindow::onRefreshPortBtnClicked(){
+
+    ui->comboBox1->clear();
+    ui->comboBox2->clear();
+    // Enumerate COM ports
+    QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
+    for(const QSerialPortInfo &info : availablePorts) {
+        QString portName = info.portName();
+        // probably add pid and vid filter here.
+        ui->comboBox1->addItem(portName);
+        ui->comboBox2->addItem(portName);
+    }
 }
 
 void MainWindow::onConnectBtnClicked() {
